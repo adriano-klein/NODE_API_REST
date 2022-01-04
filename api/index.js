@@ -5,5 +5,5 @@ const routes = require("./routes/suppliers/index");
 
 app.use(express.json());
 
-app.use("/api/suppliers", routes);
+app.get("/api/suppliers", routes);
 app.listen(config.get("api.port"), () => console.log("Servidor rodando"));
