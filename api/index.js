@@ -1,9 +1,10 @@
 const express = require("express");
 const app = express();
 const config = require("config");
-const routes = require("./routes/suppliers/index");
+const supplierRoutes = require("./routes/suppliers");
 
 app.use(express.json());
 
-app.get("/api/suppliers", routes);
+app.use("/api/suppliers", supplierRoutes);
+
 app.listen(config.get("api.port"), () => console.log("Servidor rodando"));
