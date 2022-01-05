@@ -4,7 +4,6 @@ const Supplier = require("./Supplier");
 
 route.post("/", async (req, res) => {
   const receivedData = req.body;
-  res.json(receivedData);
   const supplier = new Supplier(receivedData);
 
   await supplier.create();
