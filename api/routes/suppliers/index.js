@@ -16,4 +16,16 @@ route.get("/", async (req, res) => {
   res.status(200).json(resultados);
 });
 
+route.get("/:supplier_id", async (req, res) => {
+  try {
+    const id = req.params.supplier_id;
+    const supplier = new Supplier({ id });
+    await supplier.findById();
+
+    res.send(supplier);
+  } catch (error) {
+    res.status(400).json("Fornecedor não encontrado");
+  }
+});
+
 module.exports = route;
