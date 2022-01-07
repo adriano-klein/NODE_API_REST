@@ -2,20 +2,27 @@ const route = require("express").Router();
 const TableModel = require("./modelSuppliersTable");
 const Supplier = require("./Supplier");
 
+//Cadastro de fornecedor
 route.post("/", async (req, res) => {
-  const receivedData = req.body;
-  const supplier = new Supplier(receivedData);
+  try {
+    const receivedData = req.body;
+    const supplier = new Supplier(receivedData);
 
-  await supplier.create();
+    await supplier.create();
 
-  res.status(200).json(supplier);
+    res.status(200).json(supplier);
+  } catch (error) {
+    res.json(error.message);
+  }
 });
 
+//Listar todos os fornecedores cadastrados
 route.get("/", async (req, res) => {
   const resultados = await TableModel.findAll();
   res.status(200).json(resultados);
 });
 
+//Buscar um fornecedor específico
 route.get("/:supplier_id", async (req, res) => {
   try {
     const id = req.params.supplier_id;
@@ -28,6 +35,7 @@ route.get("/:supplier_id", async (req, res) => {
   }
 });
 
+//Atualizar um fornecedor
 route.put("/:supplier_id", async (req, res) => {
   try {
     const id = req.params.supplier_id;
@@ -37,6 +45,19 @@ route.put("/:supplier_id", async (req, res) => {
     await supplier.update();
 
     res.json(data);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
+
+//Deletar um fornecedor
+route.delete("/:supplier_id", async (req, res) => {
+  try {
+    const id = req.params.supplier_id;
+    const supplier = new Supplier({ id });
+
+    await supplier.delete();
+    res.json("Fornecedor removido com sucesso");
   } catch (error) {
     res.json(error.message);
   }

@@ -12,6 +12,15 @@ class Supplier {
   }
 
   async create() {
+    const fields = ["company", "email", "category"];
+    fields.forEach((field) => {
+      const value = this[field];
+
+      if ((typeof value !== "string") | (value.length === 0)) {
+        throw new Error(`O campo '${field}' está inválido`);
+      }
+    });
+
     const resultado = await supplierTable.create({
       company: this.company,
       email: this.email,
@@ -53,8 +62,18 @@ class Supplier {
     if (Object.keys(updateData).length === 0) {
       throw new Error("Não foram fornecidos dados para atualizar");
     }
-    console.log(this.id);
+
     await supplierTable.update(updateData, { where: { id: this.id } });
+  }
+
+  async delete() {
+    const supplier = await supplierTable.findOne({ where: { id: this.id } });
+
+    if (!supplier) {
+      throw new Error("Fornecedor não encontrado");
+    }
+
+    await supplierTable.destroy({ where: { id: supplier.id } });
   }
 }
 
