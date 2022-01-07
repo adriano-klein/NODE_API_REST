@@ -31,7 +31,7 @@ route.get("/:supplier_id", async (req, res) => {
 
     res.status(200).json(supplier);
   } catch (error) {
-    res.status(400).json("Fornecedor não encontrado");
+    res.status(404).json("Fornecedor não encontrado");
   }
 });
 
@@ -59,7 +59,7 @@ route.delete("/:supplier_id", async (req, res) => {
     await supplier.delete();
     res.json("Fornecedor removido com sucesso");
   } catch (error) {
-    res.json(error.message);
+    res.status(404).json(error.message);
   }
 });
 
