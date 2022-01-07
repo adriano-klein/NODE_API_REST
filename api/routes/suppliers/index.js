@@ -10,9 +10,9 @@ route.post("/", async (req, res) => {
 
     await supplier.create();
 
-    res.status(200).json(supplier);
+    res.status(201).json(supplier);
   } catch (error) {
-    res.json(error.message);
+    res.status(400).json(error.message);
   }
 });
 
@@ -29,7 +29,7 @@ route.get("/:supplier_id", async (req, res) => {
     const supplier = new Supplier({ id });
     await supplier.findById();
 
-    res.send(supplier);
+    res.status(200).json(supplier);
   } catch (error) {
     res.status(400).json("Fornecedor não encontrado");
   }
@@ -44,9 +44,9 @@ route.put("/:supplier_id", async (req, res) => {
     const supplier = new Supplier(data);
     await supplier.update();
 
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
-    res.json(error.message);
+    res.status(400).json(error.message);
   }
 });
 
