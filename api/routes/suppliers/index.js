@@ -28,4 +28,18 @@ route.get("/:supplier_id", async (req, res) => {
   }
 });
 
+route.put("/:supplier_id", async (req, res) => {
+  try {
+    const id = req.params.supplier_id;
+    const receivedData = req.body;
+    const data = Object.assign({}, receivedData, { id: id });
+    const supplier = new Supplier(data);
+    await supplier.update();
+
+    res.json(data);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
+
 module.exports = route;

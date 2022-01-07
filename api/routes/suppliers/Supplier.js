@@ -35,6 +35,27 @@ class Supplier {
     this.updatedAt = encontrado.updatedAt;
     this.version = encontrado.version;
   }
+
+  async update() {
+    await supplierTable.findOne({ where: { id: this.id } });
+
+    const fields = ["company", "email", "category"];
+    const updateData = {};
+
+    fields.forEach((field) => {
+      const value = this[field];
+
+      if (typeof value === "string" && value.length > 0) {
+        updateData[field] = value;
+      }
+    });
+
+    if (Object.keys(updateData).length === 0) {
+      throw new Error("Não foram fornecidos dados para atualizar");
+    }
+    console.log(this.id);
+    await supplierTable.update(updateData, { where: { id: this.id } });
+  }
 }
 
 module.exports = Supplier;
