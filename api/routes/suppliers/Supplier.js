@@ -1,5 +1,7 @@
 const supplierTable = require("./modelSuppliersTable");
 const NotFound = require("../../erros/NotFound");
+const InvalidField = require("../../erros/InvalidField");
+const NotProvidedData = require("../../erros/NotProvidedData");
 
 class Supplier {
   constructor({ id, company, email, category, createdAt, updatedAt, version }) {
@@ -18,7 +20,7 @@ class Supplier {
       const value = this[field];
 
       if ((typeof value !== "string") | (value.length === 0)) {
-        throw new Error(`O campo '${field}' está inválido`);
+        throw new InvalidField(field);
       }
     });
 
@@ -35,7 +37,6 @@ class Supplier {
   }
 
   async findById() {
-    console.log("ok");
     const encontrado = await supplierTable.findOne({
       where: { id: this.id },
     });
@@ -71,7 +72,7 @@ class Supplier {
     });
 
     if (Object.keys(updateData).length === 0) {
-      throw new Error("Não foram fornecidos dados para atualizar");
+      throw new NotProvidedData();
     }
 
     await supplierTable.update(updateData, { where: { id: this.id } });

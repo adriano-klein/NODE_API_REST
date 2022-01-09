@@ -1,11 +1,11 @@
 const route = require("express").Router();
 const TableModel = require("./modelSuppliersTable");
 const Supplier = require("./Supplier");
-const notFound = require("../../erros/NotFound");
 
 //Cadastro de fornecedor
-route.post("/", async (req, res) => {
+route.post("/", async (req, res, next) => {
   try {
+    console.log(req.body);
     const receivedData = req.body;
     const supplier = new Supplier(receivedData);
 
@@ -13,7 +13,7 @@ route.post("/", async (req, res) => {
 
     res.status(201).json(supplier);
   } catch (error) {
-    res.status(400).json(error.message);
+    next(error);
   }
 });
 
@@ -24,7 +24,7 @@ route.get("/", async (req, res) => {
 });
 
 //Buscar um fornecedor específico
-route.get("/:supplier_id", async (req, res) => {
+route.get("/:supplier_id", async (req, res, next) => {
   try {
     const id = req.params.supplier_id;
     const supplier = new Supplier({ id });
@@ -32,12 +32,7 @@ route.get("/:supplier_id", async (req, res) => {
 
     res.status(200).json(supplier);
   } catch (error) {
-    if (error instanceof notFound) {
-      res.status(404);
-    } else {
-      res.status(404);
-    }
-    res.json({ message: error.message });
+    next(error);
   }
 });
 
@@ -54,12 +49,12 @@ route.put("/:supplier_id", async (req, res, next) => {
   } catch (error) {
     next(error);
 
-    res.json({ message: error.message, id: error.id });
+    return res.json({ message: error.message });
   }
 });
 
 //Deletar um fornecedor
-route.delete("/:supplier_id", async (req, res) => {
+route.delete("/:supplier_id", async (req, res, next) => {
   try {
     const id = req.params.supplier_id;
     const supplier = new Supplier({ id });
@@ -67,7 +62,7 @@ route.delete("/:supplier_id", async (req, res) => {
     await supplier.delete();
     res.json("Fornecedor removido com sucesso");
   } catch (error) {
-    res.status(404).json(error.message);
+    next(error);
   }
 });
 
