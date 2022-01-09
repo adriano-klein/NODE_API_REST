@@ -1,6 +1,7 @@
 const route = require("express").Router();
 const TableModel = require("./modelSuppliersTable");
 const Supplier = require("./Supplier");
+const notFound = require("../../erros/NotFound");
 
 //Cadastro de fornecedor
 route.post("/", async (req, res) => {
@@ -31,12 +32,17 @@ route.get("/:supplier_id", async (req, res) => {
 
     res.status(200).json(supplier);
   } catch (error) {
-    res.status(404).json("Fornecedor não encontrado");
+    if (error instanceof notFound) {
+      res.status(404);
+    } else {
+      res.status(404);
+    }
+    res.json({ message: error.message });
   }
 });
 
 //Atualizar um fornecedor
-route.put("/:supplier_id", async (req, res) => {
+route.put("/:supplier_id", async (req, res, next) => {
   try {
     const id = req.params.supplier_id;
     const receivedData = req.body;
@@ -46,7 +52,9 @@ route.put("/:supplier_id", async (req, res) => {
 
     res.status(200).json(data);
   } catch (error) {
-    res.status(400).json(error.message);
+    next(error);
+
+    res.json({ message: error.message, id: error.id });
   }
 });
 

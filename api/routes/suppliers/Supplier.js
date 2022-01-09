@@ -1,4 +1,5 @@
 const supplierTable = require("./modelSuppliersTable");
+const NotFound = require("../../erros/NotFound");
 
 class Supplier {
   constructor({ id, company, email, category, createdAt, updatedAt, version }) {
@@ -34,9 +35,15 @@ class Supplier {
   }
 
   async findById() {
+    console.log("ok");
     const encontrado = await supplierTable.findOne({
       where: { id: this.id },
     });
+
+    if (!encontrado) {
+      throw new NotFound();
+    }
+
     this.company = encontrado.company;
     this.email = encontrado.email;
     this.category = encontrado.category;
@@ -46,7 +53,11 @@ class Supplier {
   }
 
   async update() {
-    await supplierTable.findOne({ where: { id: this.id } });
+    const id = await supplierTable.findOne({ where: { id: this.id } });
+
+    if (!id) {
+      throw new NotFound();
+    }
 
     const fields = ["company", "email", "category"];
     const updateData = {};
